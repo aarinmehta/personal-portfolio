@@ -40,7 +40,7 @@ export function Contact() {
               marginBottom: "1rem",
             }}
           >
-            Let's work together
+            Let's build together
           </h2>
 
           <div className="grid sm:grid-cols-2 gap-4">
