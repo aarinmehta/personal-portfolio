@@ -1,4 +1,5 @@
-import { motion } from "motion/react";
+import { useState, useEffect } from "react";
+import { motion, AnimatePresence } from "motion/react";
 import { Github, Linkedin, Mail, ArrowDown, Download } from "lucide-react";
 import resume from "../../assets/Aarin Resume.pdf";
 import headshot from "../../assets/grad headshot.jpeg";
@@ -9,6 +10,67 @@ const googleDots = [
   { color: "#FBBC05", delay: 0.2 },
   { color: "#34A853", delay: 0.3 },
 ];
+
+const rotatingPhrases = [
+  { text: "full-stack apps.", color: "#4285F4" },
+  { text: "backend APIs.", color: "#EA4335" },
+  { text: "cloud infrastructure.", color: "#34A853" },
+  { text: "things people use.", color: "#FBBC05" },
+];
+
+function RotatingHeadline() {
+  const [index, setIndex] = useState(0);
+  const [reducedMotion, setReducedMotion] = useState(false);
+
+  useEffect(() => {
+    const query = window.matchMedia("(prefers-reduced-motion: reduce)");
+    setReducedMotion(query.matches);
+    const onChange = () => setReducedMotion(query.matches);
+    query.addEventListener("change", onChange);
+    return () => query.removeEventListener("change", onChange);
+  }, []);
+
+  useEffect(() => {
+    if (reducedMotion) return;
+    const interval = setInterval(() => {
+      setIndex((i) => (i + 1) % rotatingPhrases.length);
+    }, 2000);
+    return () => clearInterval(interval);
+  }, [reducedMotion]);
+
+  const phrase = rotatingPhrases[index];
+
+  return (
+    <h1
+      style={{
+        fontFamily: "'Plus Jakarta Sans', sans-serif",
+        fontWeight: 800,
+        fontSize: "clamp(1.5rem, 2.6vw, 2rem)",
+        lineHeight: 1.12,
+        letterSpacing: "-0.025em",
+        color: "#141414",
+        whiteSpace: "nowrap",
+        minHeight: "2.25rem",
+      }}
+    >
+      I build{" "}
+      <span style={{ display: "inline-block", position: "relative", verticalAlign: "top" }}>
+        <AnimatePresence mode="wait">
+          <motion.span
+            key={phrase.text}
+            initial={reducedMotion ? { opacity: 0 } : { opacity: 0, y: 8 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={reducedMotion ? { opacity: 0 } : { opacity: 0, y: -8 }}
+            transition={{ duration: 0.3 }}
+            style={{ display: "inline-block", color: phrase.color }}
+          >
+            {phrase.text}
+          </motion.span>
+        </AnimatePresence>
+      </span>
+    </h1>
+  );
+}
 
 export function Hero() {
   return (
@@ -34,23 +96,31 @@ export function Hero() {
         <div className="grid md:grid-cols-2 gap-16 items-center">
           {/* Left */}
           <div>
-            <motion.h1
+            <motion.span
+              initial={{ opacity: 0, y: 24 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.55, delay: 0.05 }}
+              className="block"
+              style={{
+                fontFamily: "'Inter', sans-serif",
+                fontWeight: 700,
+                fontSize: "0.875rem",
+                letterSpacing: "0.14em",
+                textTransform: "uppercase",
+                color: "#888",
+              }}
+            >
+              Software Engineer
+            </motion.span>
+
+            <motion.div
               initial={{ opacity: 0, y: 24 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.55, delay: 0.1 }}
-              style={{
-                fontFamily: "'Plus Jakarta Sans', sans-serif",
-                fontWeight: 800,
-                fontSize: "clamp(2.6rem, 5vw, 4rem)",
-                lineHeight: 1.1,
-                letterSpacing: "-0.03em",
-                color: "#202124",
-              }}
+              className="mt-3"
             >
-              Hi, I'm{" "}
-              <span style={{ color: "#4285F4" }}>Aarin</span>{" "}
-              <span style={{ color: "#EA4335" }}>Mehta</span>
-            </motion.h1>
+              <RotatingHeadline />
+            </motion.div>
 
             <motion.p
               initial={{ opacity: 0, y: 24 }}

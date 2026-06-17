@@ -33,7 +33,7 @@ export function Nav() {
           style={{
             fontFamily: "'Plus Jakarta Sans', sans-serif",
             fontWeight: 700,
-            fontSize: "1rem",
+            fontSize: "1.8rem",
             color: "#202124",
             letterSpacing: "-0.01em",
           }}
